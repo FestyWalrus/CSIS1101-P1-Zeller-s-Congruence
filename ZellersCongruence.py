@@ -5,6 +5,7 @@
 	16 December 2019 (a Monday)
 '''
 import PySimpleGUI as sg
+import math
 
 #Selector lists - the Combo box and Spinner UI elements of PySimpleGUI take lists as acceptable values for the inputs.
 #Creating these here makes the layout 2D List easier to read.
@@ -24,9 +25,11 @@ layout = [	[sg.Combo(monthList, default_value='January', font='Courier` 16'), sg
 			[sg.Text('Hit "Calculate" to get the weekday :)', key='infoText', font='Courier` 16')]]
 
 def ZCong(month, day, year): #function to calculate the weekday
+
 	daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 	yearOfCentury = year % 100
 	zBasedCentury = year // 100 #the algorithm won't work with a float, so truncate the decimal points and convert to int
+
 	returnString = month + ' ' + str(day) + ' ' + str(year) + ' is a '
 
 	#convert month string to the appropriate integer for the algorithm
@@ -74,15 +77,21 @@ def ZCong(month, day, year): #function to calculate the weekday
 		if day > 31:
 			return "Invalid date, please try again."
 		month = 13
+		yearOfCentury -= 1
 	elif month is "February":
 		if day > 29:
 			return "Invalid date, please try again."
 		month = 14
+		yearOfCentury -= 1
 
+	#Fixed my bug with info from this site https://www.geeksforgeeks.org/zellers-congruence-find-day-date/
 	#The actual Zeller's Congruence algorithm - The star of the show!!
+
 	weekday = (day + (13*(month+1)//5) + yearOfCentury + (yearOfCentury//4) + (zBasedCentury//4) - 2*zBasedCentury) % 7
 
 	returnString += daysOfWeek[weekday] + '.'
+
+	print("{} {}/{}/{}".format(weekday, month, day, year))
 
 	return returnString
 
